@@ -1,0 +1,30 @@
+{
+  "name": "blink-api",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bunx drizzle-kit migrate",
+    "db:push": "bunx drizzle-kit push"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.1",
+    "@neondatabase/serverless": "^0.10.4",
+    "aedes": "^0.51.3",
+    "drizzle-orm": "^0.36.4",
+    "expo-server-sdk": "^3.13.0",
+    "hono": "^4.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "mqtt": "^5.10.0",
+    "websocket-stream": "^5.5.2",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "drizzle-kit": "^0.28.1",
+    "typescript": "^5.6.0"
+  }
+}
