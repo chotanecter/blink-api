@@ -73,7 +73,7 @@ devicesRouter.post(
       if (existingById) {
         existing = existingById;
       } else {
-        // Find or create the \"Test Artist\" influencer for manufacturer testing
+        // Find or create the "Test Artist" influencer for manufacturer testing
         let [testInf] = await db
           .select()
           .from(influencers)
@@ -81,7 +81,7 @@ devicesRouter.post(
           .limit(1);
 
         if (!testInf) {
-          // Look for any influencer with \"test\" in the slug
+          // Look for any influencer with "test" in the slug
           [testInf] = await db
             .select()
             .from(influencers)
@@ -130,13 +130,23 @@ devicesRouter.post(
       })
       .where(eq(devices.id, existing.id));
 
+    // Public MQTT connection info for external devices
+    // TCP proxy: nozomi.proxy.rlwy.net:24799 → internal :1883
+    // WSS: wss://blink-api-production-267f.up.railway.app (shares HTTPS port)
+    const publicHost = process.env.MQTT_PUBLIC_HOST || c.req.header("Host")?.split(":")[0] || "localhost";
+    const publicPort = parseInt(process.env.MQTT_PUBLIC_PORT || process.env.MQTT_PORT || "1883");
+    const wsHost = process.env.MQTT_WS_HOST || c.req.header("Host")?.split(":")[0] || "localhost";
+    const wsPort = parseInt(process.env.MQTT_WS_PUBLIC_PORT || "443");
+
     return c.json({
       device_token: deviceToken,
       artist_id: existing.influencerId,
       mqtt: {
-        host: c.req.header("Host")?.split(":")[0] || "localhost",
-        port: parseInt(process.env.MQTT_PORT || "1883"),
-        ws_port: parseInt(process.env.MQTT_WS_PORT || "8883"),
+        host: publicHost,
+        port: publicPort,
+        ws_host: wsHost,
+        ws_port: wsPort,
+        use_tls: wsPort === 443,
         username: existing.deviceId,
         topics: {
           notify: `fp/${existing.influencerId}/notify`,
